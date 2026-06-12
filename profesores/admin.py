@@ -5,7 +5,7 @@ from .models import Profesor
 @admin.register(Profesor)
 class ProfesorAdmin(admin.ModelAdmin):
     list_display = (
-        'miniatura',
+        'miniaturas',
         'usuario',
         'especialidad',
         'telefono',
@@ -17,17 +17,17 @@ class ProfesorAdmin(admin.ModelAdmin):
         'especialidad',
     )
     list_filter = (
-    'especialidad',
+        'especialidad',
     )
     ordering = (
-    'usuario__last_name',
+        'usuario__last_name',
     )
 
-def miniatura(self, obj):
-    if obj.foto:
-        return format_html(
-            '<img src="{}" width="50"/>',
-            obj.foto.url
-        )
-    return "-"
-miniatura.short_description = "Foto"    
+    def miniaturas(self, obj):
+        if obj.miniatura:
+            return format_html(
+                '<img src="{}" width="50"/>',
+                obj.miniatura.url
+            )
+        return "-"
+    miniaturas.short_description = "Foto"
