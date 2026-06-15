@@ -49,9 +49,12 @@
           <span class="text-white me-3">
             {{ user.username }}
           </span>
-          <a href="{% url 'logout' %}" class="btn btn-danger">
-            Salir
-          </a>
+          <form method="post" action="{% url 'logout' %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+              Salir
+            </button>
+          </form>
           {% else %}
           <a href="{% url 'registro' %}" class="btn btn-success me-2">
             Registro
