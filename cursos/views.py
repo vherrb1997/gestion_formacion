@@ -6,7 +6,7 @@ def lista_cursos(request):
     cursos = Curso.objects.filter(activo=True).order_by("fecha_inicio")
     return render(
         request,
-        "cursos/lista_cursos.html",
+        "cursos/lista_curso.html",
         {"cursos": cursos, "total_cursos": cursos.count()},
     )
 
