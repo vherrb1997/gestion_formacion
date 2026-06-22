@@ -4,19 +4,13 @@
 <html lang="es">
 
 <head>
-
   <meta charset="UTF-8">
-
   <title>
-
     {% block title %}
     Gestión Formación
     {% endblock %}
-
   </title>
-
   {% bootstrap_css %}
-
 </head>
 
 <body>
@@ -27,58 +21,61 @@
         Gestión Formación
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-        <span class="navbar-toggler-icon">
-        </span>
+        <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="menu">
 
+      <div class="collapse navbar-collapse" id="menu">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'inicio' %}">
-              Inicio
-            </a>
+            <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'lista_cursos' %}">
-              Cursos
-            </a>
+            <a class="nav-link" href="{% url 'lista_cursos' %}">Cursos</a>
           </li>
         </ul>
+
         <div>
           {% if user.is_authenticated %}
-          <span class="text-white me-3">
-            {{ user.username }}
-          </span>
+          <div class="alert alert-success d-inline-block me-2">
+            Bienvenido <strong>{{ user.first_name }} {{ user.last_name }}</strong>
+          </div>
+
+          {% if user.tipo == 'alumno' %}
+          <a href="{% url 'dashboard' %}" class="btn btn-primary me-2">Dashboard</a>
+          <a href="{% url 'mis_cursos' %}" class="btn btn-warning me-2">Mis Cursos</a>
+          {% endif %}
+
           <form method="post" action="{% url 'logout' %}" class="d-inline">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">
-              Salir
-            </button>
+            <button type="submit" class="btn btn-danger">Salir</button>
           </form>
+
           {% else %}
-          <a href="{% url 'registro' %}" class="btn btn-success me-2">
-            Registro
-          </a>
-          <a href="{% url 'login' %}" class="btn btn-primary">
-            Login
-          </a>
+          <a href="{% url 'registro' %}" class="btn btn-success me-2">Registro</a>
+          <a href="{% url 'login' %}" class="btn btn-primary me-2">Login</a>
+
+          {# Nota: 'Mis Cursos' y 'Dashboard' usualmente no están disponibles para no autenticados #}
+          {# Si es necesario mostrarlos, asegúrate de que las URLs permitan acceso público #}
+          <a href="{% url 'lista_cursos' %}" class="btn btn-success">Ver Cursos</a>
           {% endif %}
         </div>
       </div>
     </div>
   </nav>
-  Gestión Formación
-  </a>
 
+  <div class="container mt-3">
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
   </div>
 
-  </nav>
-
   <div class="container mt-4">
-
     {% block content %}
     {% endblock %}
-
   </div>
 
   {% bootstrap_javascript %}

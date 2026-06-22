@@ -12,7 +12,10 @@
         {% if user.is_authenticated %}
         <div class="alert alert-success">
             Bienvenido
-            {{ user.first_name }}
+            <strong>
+                {{ user.first_name }}
+                {{ user.last_name }}
+            </strong>
         </div>
         {% else %}
         <a href="{% url 'registro' %}" class="btn btn-primary btn-lg">
@@ -20,5 +23,6 @@
         </a>
         {% endif %}
     </div>
+</div>
 </div>
 {% endblock %}

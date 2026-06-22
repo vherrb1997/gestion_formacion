@@ -5,6 +5,7 @@ from django.utils.html import format_html
 from datetime import datetime, time, timedelta
 from django.utils import timezone
 
+
 class FiltroFechas(admin.SimpleListFilter):
     title = "Filtro temporal"
     parameter_name = "periodo"
@@ -49,6 +50,7 @@ class FiltroFechas(admin.SimpleListFilter):
             return queryset.filter(fecha_inicio__gte=inicio_d, fecha_inicio__lt=fin_d)
 
         return queryset
+
 
 @admin.register(Curso)
 class CursoAdmin(admin.ModelAdmin):

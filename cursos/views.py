@@ -12,5 +12,8 @@ def lista_cursos(request):
 
 
 def detalle_curso(request, curso_id):
+    ocupadas = curso.matriculas.count()
     curso = get_object_or_404(Curso, pk=curso_id, activo=True)
-    return render(request, "cursos/detalle_curso.html", {"curso": curso})
+    return render(
+        request, "cursos/detalle_curso.html", {"curso": curso, "ocupadas": ocupadas}
+    )
