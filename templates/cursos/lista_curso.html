@@ -18,6 +18,26 @@ Cursos
     Oferta Formativa
 </h1>
 {# Título principal de la página con margen inferior (Bootstrap: mb-4) #}
+<form method="get">
+    <div class="input-group mb-4">
+        <input type="text" name="buscar" class="form-control" placeholder="Buscar curso"
+            value="{{ request.GET.buscar }}">
+        <select name="profesor" class="form-select">
+            <option value="">
+                Todos los profesores
+            </option>
+            {% for profesor in profesores %}
+            <option value="{{ profesor.id }}">
+                {{ profesor }}
+            </option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary">
+            Buscar
+        </button>
+    </div>
+</form>
+
 
 <div class="row">
     {# Contenedor de Bootstrap para organizar los cursos en filas #}
@@ -61,7 +81,7 @@ Cursos
             <div class="card-footer">
                 {# Pie de la tarjeta con acciones #}
 
-                <a href="{% url 'detalle_curso' curso.id %}" class="btn btn-primary">
+                <a href="{% url 'detalle_curso' curso.slug %}" class="btn btn-primary">
                     Ver curso
                 </a>
                 {# Botón que lleva al detalle del curso usando su ID #}
@@ -70,7 +90,29 @@ Cursos
 
         </div>
     </div>
-
+    <nav>
+        <ul class="pagination">
+            {% if cursos.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ cursos.previous_page_number }}">
+                    Anterior
+                </a>
+            </li>
+            {% endif %}
+            <li class="page-item active">
+                <span class="page-link">
+                    {{ cursos.number }}
+                </span>
+            </li>
+            {% if cursos.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ cursos.next_page_number }}">
+                    Siguiente
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
     {% empty %}
     {# Se ejecuta si NO hay cursos disponibles #}
 

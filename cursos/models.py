@@ -1,6 +1,7 @@
 from django.db import models
 from profesores.models import Profesor
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 
 
 class Curso(models.Model):
@@ -16,6 +17,13 @@ class Curso(models.Model):
     imagen = models.ImageField(upload_to="cursos/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    slug = models.SlugField(unique=True, null=True)
+    nombre = models.CharField(max_length=200, db_index=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.nombre)
+        super().save(*args, **kwargs)
 
     def clean(self):
         if self.fecha_fin < self.fecha_inicio:

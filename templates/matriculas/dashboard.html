@@ -1,85 +1,92 @@
 {% extends 'base.html' %}
-{% block title %}
-Dashboard
-{% endblock %}
+
+{% block title %}Dashboard{% endblock %}
+
 {% block content %}
-<h1 class="mb-4">
-    Dashboard Alumno
-</h1>
-<div class="row">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5>Total Matrículas</h5>
-                <h2>
-                    {{ total_matriculas }}
-                </h2>
+<div class="container mt-4">
+    <h1 class="mb-4 text-center">Dashboard Alumno</h1>
+
+    <!-- Sección 1: Tarjetas de Estadísticas Principales -->
+    <div class="row mb-4">
+        <!-- Total Matrículas -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Total Matrículas</h5>
+                    <h2 class="display-4">{{ total_matriculas }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Última Matrícula -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Última Matrícula</h5>
+                    <p class="card-text fs-5">
+                        {% if ultima_matricula %}
+                            <strong>{{ ultima_matricula.curso.nombre }}</strong>
+                        {% else %}
+                            <span class="text-muted">Sin datos</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximo Curso -->
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Próximo Curso</h5>
+                    <p class="card-text fs-5">
+                        {% if proximo_curso %}
+                            <strong>{{ proximo_curso.nombre }}</strong>
+                        {% else %}
+                            <span class="text-muted">Sin datos</span>
+                        {% endif %}
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5>Última Matrícula</h5>
-                <p>
-                    {% if ultima_matricula %}
-                    {{ ultima_matricula.curso.nombre }}
+
+    <!-- Sección 2: Detalles Adicionales y Listados -->
+    <div class="row">
+        <!-- Columna Izquierda: Cursos Disponibles -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Cursos Disponibles</h5>
+                </div>
+                <div class="card-body text-center">
+                    <h1 class="display-3 text-primary">{{ cursos_disponibles }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Historial Reciente -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Últimas Matrículas</h5>
+                </div>
+                <div class="card-body">
+                    {% if ultimas_matriculas %}
+                        <ul class="list-group list-group-flush">
+                            {% for matricula in ultimas_matriculas %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ matricula.curso.nombre }}
+                                    <span class="badge bg-secondary rounded-pill">Ver</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     {% else %}
-                    Sin datos
+                        <p class="text-muted text-center">No hay matrículas recientes.</p>
                     {% endif %}
-                </p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h5>Próximo Curso</h5>
-                <p>
-                    {% if proximo_curso %}
-                    {{ proximo_curso.nombre }}
-                    {% else %}
-                    Sin datos
-                    {% endif %}
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="card text-center">
-        <div class="card-body">
-            <h5>
-                Cursos Matriculados
-            </h5>
-            <h1>
-                {{ total_matriculas }}
-            </h1>
-        </div>
-    </div>
-    <h5>
-        Cursos Disponibles
-    </h5>
-    <h2>
-        {{ cursos_disponibles }}
-    </h2>
-    <h3>
-        Últimas Matrículas
-    </h3>
-    <ul>
-        {% for matricula in ultimas_matriculas %}
-        <li>
-            {{ matricula.curso.nombre }}
-        </li>
-        {% endfor %}
-    </ul>
-    <h3>
-        Últimas Matrículas
-    </h3>
-    <ul>
-        {% for matricula in ultimas_matriculas %}
-        <li>
-            {{ matricula.curso.nombre }}
-        </li>
-        {% endfor %}
-    </ul>
 </div>
-{% endblock %}
+{% endblock %}   

@@ -1,61 +1,47 @@
 {% extends 'base.html' %}
-{% block title %}
-Mis Cursos
-{% endblock %}
+
+{% block title %}Mis Cursos{% endblock %}
+
 {% block content %}
-<h1>
-    Mis Cursos
-</h1>
+<h1>Mis Cursos</h1>
+
 <table class="table">
     <thead>
         <tr>
             <th>Curso</th>
             <th>Profesor</th>
             <th>Fecha inicio</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
         {% for matricula in matriculas %}
         <tr>
+            <td>{{ matricula.curso.nombre }}</td>
+            <td>{{ matricula.curso.profesor }}</td>
+            <td>{{ matricula.curso.fecha_inicio }}</td>
             <td>
-                {{ matricula.curso.nombre }}
-            </td>
-            <td>
-                {{ matricula.select_related(
-                'curso',
-                'curso__profesor',
-                'curso__profesor__usuario'
-                ) }}
-            </td>
-            <td>
-                {{ matricula.curso.fecha_inicio }}
+                <a href="{% url 'cancelar_matricula' matricula.id %}" 
+                   class="btn btn-danger btn-sm" 
+                   onclick="return confirm('¿Desea cancelar esta matrícula?')">
+                   Cancelar
+                </a>
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="3">
-                No tienes cursos matriculados.
-            </td>
+            <td colspan="4">No tienes cursos matriculados.</td>
         </tr>
         {% endfor %}
     </tbody>
-    <th>Acciones</th>
-    <td>
-        <a href="{% url 'cancelar_matricula' matricula.id %}" class="btn btn-danger btn-sm" onclick="return confirm(
-'¿Desea cancelar esta matrícula?'
-)">
-            Cancelar
-        </a>
-    </td>
-    <h3>
-        Últimas Matrículas
-    </h3>
-    <ul>
-        {% for matricula in ultimas_matriculas %}
-        <li>
-            {{ matricula.curso.nombre }}
-        </li>
-        {% endfor %}
-    </ul>
 </table>
-{% endblock %}
+
+<h3>Últimas Matrículas</h3>
+<ul>
+    {% for matricula in ultimas_matriculas %}
+    <li>{{ matricula.curso.nombre }}</li>
+    {% empty %}
+    <li>No hay registros recientes.</li>
+    {% endfor %}
+</ul>
+{% endblock %}   

@@ -1,19 +1,54 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Curso
+from django.db.models import Q
+from profesores.models import Profesor
+from django.core.paginator import Paginator
 
 
 def lista_cursos(request):
-    cursos = Curso.objects.filter(activo=True).order_by("fecha_inicio")
+
+    busqueda = request.GET.get("buscar", "")
+    profesor_id = request.GET.get("profesor")
+
+    cursos = Curso.objects.filter(activo=True).select_related(
+        "profesor", "profesor__usuario"
+    )
+    if busqueda:
+        cursos = cursos.filter(
+            Q(nombre__icontains=busqueda) | Q(descripcion__icontains=busqueda)
+        )
+
+    if profesor_id:
+        cursos = cursos.filter(profesor_id=profesor_id)
+
+    profesores = Profesor.objects.all()
+
+    paginator = Paginator(cursos, 6)
+    page_number = request.GET.get("page")
+    cursos_page = paginator.get_page(page_number)
+
     return render(
         request,
         "cursos/lista_curso.html",
-        {"cursos": cursos, "total_cursos": cursos.count()},
+        {
+            "cursos": cursos_page,
+            "total_cursos": paginator.count,
+            "profesores": profesores,
+        },
     )
 
 
-def detalle_curso(request, curso_id):
+def detalle_curso(request, slug):
+
+    curso = get_object_or_404(Curso, slug=slug, activo=True)
+
     ocupadas = curso.matriculas.count()
-    curso = get_object_or_404(Curso, pk=curso_id, activo=True)
+
     return render(
-        request, "cursos/detalle_curso.html", {"curso": curso, "ocupadas": ocupadas}
+        request,
+        "cursos/detalle_curso.html",
+        {
+            "curso": curso,
+            "ocupadas": ocupadas,
+        },
     )

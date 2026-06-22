@@ -85,12 +85,15 @@ class CursoAdmin(admin.ModelAdmin):
 
     miniatura.short_description = "Imagen"
 
+    prepopulated_fields = {"slug": ("nombre",)}
+
     fieldsets = (
         (
             "Información General",
             {
                 "fields": (
                     "nombre",
+                    "slug",
                     "descripcion",
                     "profesor",
                 )
