@@ -1,54 +1,59 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Curso
-from django.db.models import Q
-from profesores.models import Profesor
-from django.core.paginator import Paginator
+from .forms import CursoForm
+from django.urls import reverse_lazy
+
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+)
+
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-def lista_cursos(request):
-
-    busqueda = request.GET.get("buscar", "")
-    profesor_id = request.GET.get("profesor")
-
-    cursos = Curso.objects.filter(activo=True).select_related(
-        "profesor", "profesor__usuario"
-    )
-    if busqueda:
-        cursos = cursos.filter(
-            Q(nombre__icontains=busqueda) | Q(descripcion__icontains=busqueda)
-        )
-
-    if profesor_id:
-        cursos = cursos.filter(profesor_id=profesor_id)
-
-    profesores = Profesor.objects.all()
-
-    paginator = Paginator(cursos, 6)
-    page_number = request.GET.get("page")
-    cursos_page = paginator.get_page(page_number)
-
-    return render(
-        request,
-        "cursos/lista_curso.html",
-        {
-            "cursos": cursos_page,
-            "total_cursos": paginator.count,
-            "profesores": profesores,
-        },
-    )
+class ProfesorMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.tipo == "profesor"
 
 
-def detalle_curso(request, slug):
+class ListaCursosView(ListView):
+    model = Curso
+    template_name = "cursos/lista_curso.html"
+    context_object_name = "cursos"
+    paginate_by = 6
 
-    curso = get_object_or_404(Curso, slug=slug, activo=True)
+    def get_queryset(self):
+        queryset = Curso.objects.filter(activo=True)
+        buscar = self.request.GET.get("buscar")
+        if buscar:
+            queryset = queryset.filter(nombre__icontains=buscar)
+        return queryset
 
-    ocupadas = curso.matriculas.count()
 
-    return render(
-        request,
-        "cursos/detalle_curso.html",
-        {
-            "curso": curso,
-            "ocupadas": ocupadas,
-        },
-    )
+class CursoDetailView(DetailView):
+    model = Curso
+    template_name = "cursos/detalle_curso.html"
+    context_object_name = "curso"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+
+
+class CursoCreateView(LoginRequiredMixin, ProfesorMixin, CreateView):
+    form_class = CursoForm
+    template_name = "cursos/curso_form.html"
+    success_url = reverse_lazy("lista_cursos")
+
+
+class CursoUpdateView(UpdateView):
+    form_class = CursoForm
+    template_name = "cursos/curso_form.html"
+    success_url = reverse_lazy("lista_cursos")
+
+
+class CursoDeleteView(DeleteView):
+    model = Curso
+    template_name = "cursos/curso_confirm_delete.html"
+    success_url = reverse_lazy("lista_cursos")

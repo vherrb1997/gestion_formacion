@@ -49,7 +49,15 @@
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Salir</button>
           </form>
-
+          {% if user.tipo == 'profesor' %}
+          <a href="{% url 'dashboard_profesor' %}" class="btn btn-info me-2">
+            Panel Profesor
+          </a>
+          <a href="{% url 'mis_cursos_profesor' %}" class="btn btn-secondary me-2">
+            Mis Cursos
+          </a>
+          {% endif %}
+          
           {% else %}
           <a href="{% url 'registro' %}" class="btn btn-success me-2">Registro</a>
           <a href="{% url 'login' %}" class="btn btn-primary me-2">Login</a>

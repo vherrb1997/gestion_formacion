@@ -21,6 +21,7 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("core.urls")),
@@ -29,6 +30,7 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("cursos/", include("cursos.urls")),
     path("matriculas/", include("matriculas.urls")),
+    path("profesores/", include("profesores.urls")),
 ]
 
 if settings.DEBUG:

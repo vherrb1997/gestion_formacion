@@ -4,6 +4,7 @@ from .models import Curso
 from django.utils.html import format_html
 from datetime import datetime, time, timedelta
 from django.utils import timezone
+from django.db.models import Count
 
 
 class FiltroFechas(admin.SimpleListFilter):
@@ -55,12 +56,9 @@ class FiltroFechas(admin.SimpleListFilter):
 @admin.register(Curso)
 class CursoAdmin(admin.ModelAdmin):
     list_display = (
-        "miniatura",
         "nombre",
         "profesor",
-        "fecha_inicio",
-        "fecha_fin",
-        "plazas",
+        "alumnos",
         "activo",
     )
     search_fields = (
@@ -74,6 +72,13 @@ class CursoAdmin(admin.ModelAdmin):
         FiltroFechas,
     )
     ordering = ("nombre",)
+
+    list_editable = ("activo",)
+
+    def alumnos(self, obj):
+        return obj.matriculas.count()
+
+    alumnos.short_description = "Alumnos"
 
     def get_rangefilter_fecha_inicio(self, request):
         return (None, datetime.date.today())
